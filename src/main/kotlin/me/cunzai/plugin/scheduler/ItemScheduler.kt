@@ -41,8 +41,10 @@ object ItemScheduler {
             for (item in items) {
                 if (item.isAir()) continue
                 for (condition in config.conditions) {
-                    if (condition.check(item)) return@any true
+                    if (!condition.check(item)) return@any false
                 }
+                // 满足所有条件才醒
+                return@any true
             }
 
             return@any false
@@ -50,15 +52,23 @@ object ItemScheduler {
 
         if (!test) {
             if (hasPermission(config.permission)) {
+                println("玩家 ${name} 下权限")
                 val user = LuckPermsProvider.get().userManager.getUser(uniqueId) ?: throw IllegalStateException("player not loaded lp data")
                 val data = user.data()
-                data.clear { it is PermissionNode && it.permission == config.permission }
+                data.toCollection().firstOrNull { it is PermissionNode && it.permission == config.permission }?.let {
+                    data.remove(it)
+                    data.add(it.toBuilder().value(false).build())
+                }
             }
         } else {
+            println("玩家 ${name} 上权限")
             if (!hasPermission(config.permission)) {
                 val user = LuckPermsProvider.get().userManager.getUser(uniqueId) ?: throw IllegalStateException("player not loaded lp data")
                 val data = user.data()
-                data.add(PermissionNode.builder(config.permission).build())
+                data.toCollection().firstOrNull { it is PermissionNode && it.permission == config.permission }?.let {
+                    data.remove(it)
+                    data.add(it.toBuilder().value(true).build())
+                }
             }
         }
     }

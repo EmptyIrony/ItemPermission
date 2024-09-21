@@ -52,7 +52,11 @@ object ConfigLoader {
         val conditions: List<Condition>,
         val permission: String,
         val equipSlot: List<UseSlot>
-    )
+    ) {
+        override fun toString(): String {
+            return "ItemConfig(conditions=$conditions, permission='$permission', equipSlot=$equipSlot)"
+        }
+    }
 
     interface Condition {
         fun check(item: ItemStack): Boolean

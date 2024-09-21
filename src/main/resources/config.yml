@@ -1,0 +1,11 @@
+tools:
+  1:
+    conditions:
+      lore: "神奇之力"
+      name: "魔法之杖"
+    permission:
+      - "magic.wand"
+    useLocation:
+      - "HAND"
+      - "OFF_HAND"
+      - "EQUIPPED"
